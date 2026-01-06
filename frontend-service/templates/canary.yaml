@@ -1,0 +1,26 @@
+{{- if .Values.canary.enabled }}
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: {{ include "frontend-service.fullname" . }}
+  labels:
+    {{- include "frontend-service.labels" . | nindent 4 }}
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "frontend-service.fullname" . }}
+  service:
+    port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+  providers:
+    {{- if .Values.canary.provider }}
+    - {{ .Values.canary.provider }}
+    {{- else }}
+    - istio
+    {{- end }}
+  analysis:
+    {{- if .Values.canary.analysis }}
+    {{- toYaml .Values.canary.analysis | nindent 4 }}
+    {{- end }}
+{{- end }}
