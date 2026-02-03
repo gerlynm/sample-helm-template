@@ -138,5 +138,46 @@ canary:
   #   maxWeight: 50
   #   stepWeight: 10
 
+
+# Probes
+probes:
+  liveness:
+    enabled: false
+    # httpGet:
+    #   path: /healthz
+    #   port: http
+    # initialDelaySeconds: 30
+    # periodSeconds: 10
+  readiness:
+    enabled: false
+    # httpGet:
+    #   path: /ready
+    #   port: http
+    # initialDelaySeconds: 5
+    # periodSeconds: 10
+  startup:
+    enabled: false
+    # httpGet:
+    #   path: /healthz
+    #   port: http
+    # failureThreshold: 30
+    # periodSeconds: 10
+
+# ArgoCD Hooks
+hooks:
+  pre:
+    enabled: false
+    # image:
+    #   repository: busybox
+    #   tag: latest
+    # command: ["/bin/sh", "-c", "echo pre-hook"]
+  post:
+    enabled: false
+    # image:
+    #   repository: busybox
+    #   tag: latest
+    # command: ["/bin/sh", "-c", "echo post-hook"]
+
 # Additional labels
 labels: {}
+

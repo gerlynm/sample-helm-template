@@ -49,6 +49,62 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: {{ .protocol | default "TCP" }}
             {{- end }}
+          {{- if .Values.probes.liveness.enabled }}
+          livenessProbe:
+            {{- if .Values.probes.liveness.httpGet }}
+            httpGet:
+              path: {{ .Values.probes.liveness.httpGet.path }}
+              port: {{ .Values.probes.liveness.httpGet.port }}
+            {{- else if .Values.probes.liveness.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.probes.liveness.tcpSocket.port }}
+            {{- else if .Values.probes.liveness.exec }}
+            exec:
+              command: {{ .Values.probes.liveness.exec.command | toJson }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 30 }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds | default 1 }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 3 }}
+            successThreshold: {{ .Values.probes.liveness.successThreshold | default 1 }}
+          {{- end }}
+          {{- if .Values.probes.readiness.enabled }}
+          readinessProbe:
+            {{- if .Values.probes.readiness.httpGet }}
+            httpGet:
+              path: {{ .Values.probes.readiness.httpGet.path }}
+              port: {{ .Values.probes.readiness.httpGet.port }}
+            {{- else if .Values.probes.readiness.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.probes.readiness.tcpSocket.port }}
+            {{- else if .Values.probes.readiness.exec }}
+            exec:
+              command: {{ .Values.probes.readiness.exec.command | toJson }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds | default 1 }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold | default 3 }}
+            successThreshold: {{ .Values.probes.readiness.successThreshold | default 1 }}
+          {{- end }}
+          {{- if .Values.probes.startup.enabled }}
+          startupProbe:
+            {{- if .Values.probes.startup.httpGet }}
+            httpGet:
+              path: {{ .Values.probes.startup.httpGet.path }}
+              port: {{ .Values.probes.startup.httpGet.port }}
+            {{- else if .Values.probes.startup.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.probes.startup.tcpSocket.port }}
+            {{- else if .Values.probes.startup.exec }}
+            exec:
+              command: {{ .Values.probes.startup.exec.command | toJson }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .Values.probes.startup.periodSeconds | default 10 }}
+            failureThreshold: {{ .Values.probes.startup.failureThreshold | default 30 }}
+            timeoutSeconds: {{ .Values.probes.startup.timeoutSeconds | default 1 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- if .Values.volumeMounts }}
