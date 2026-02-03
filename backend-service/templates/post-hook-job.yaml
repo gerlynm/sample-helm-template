@@ -1,0 +1,27 @@
+{{- if .Values.hooks.post.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "backend-service.fullname" . }}-post-hook
+  labels:
+    {{- include "backend-service.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    {{- with .Values.hooks.post.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: post-hook
+          image: "{{ .Values.hooks.post.image.repository }}:{{ .Values.hooks.post.image.tag }}"
+          imagePullPolicy: {{ .Values.hooks.post.image.pullPolicy | default "IfNotPresent" }}
+          command: {{ .Values.hooks.post.command | toJson }}
+          {{- with .Values.hooks.post.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
