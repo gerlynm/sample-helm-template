@@ -1,4 +1,5 @@
-{{- range $name, $route := .Values.grpcRoutes }}
+{{- if .Values.grpcRoutes.enabled }}
+{{- range $name, $route := .Values.grpcRoutes.routes }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: GRPCRoute
@@ -32,4 +33,5 @@ spec:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}

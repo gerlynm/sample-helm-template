@@ -16,7 +16,7 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -179,8 +179,11 @@ hooks:
     # command: ["/bin/sh", "-c", "echo post-hook"]
 
 
+
 # Gateway API HTTPRoutes
-httpRoutes: {}
+httpRoutes:
+  enabled: false
+  routes: {}
   # web:
   #   labels: {}
   #   annotations: {}
@@ -216,7 +219,9 @@ httpRoutes: {}
   #       port: 80
 
 # Gateway API GRPCRoutes
-grpcRoutes: {}
+grpcRoutes:
+  enabled: false
+  routes: {}
   # grpc:
   #   labels: {}
   #   annotations:
@@ -239,7 +244,9 @@ grpcRoutes: {}
   #       port: 50051
 
 # GCP Backend Policies
-gcpBackendPolicies: {}
+gcpBackendPolicies:
+  enabled: false
+  policies: {}
   # default-policy:
   #   annotations: {}
   #   default:
