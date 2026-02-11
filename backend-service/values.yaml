@@ -178,6 +178,76 @@ hooks:
     #   tag: latest
     # command: ["/bin/sh", "-c", "echo post-hook"]
 
-# Additional labels
-labels: {}
+
+# Gateway API HTTPRoutes
+httpRoutes: {}
+  # web:
+  #   labels: {}
+  #   annotations: {}
+  #   parentRefs:
+  #   - name: edge-gw
+  #     namespace: default
+  #     sectionName: https
+  #   hostnames:
+  #   - api-example.example.com
+  #   rules:
+  #   - matches:
+  #     - path:
+  #         type: PathPrefix
+  #         value: /media/v1
+  #     backendRefs:
+  #     - name: media-service
+  #       port: 80
+  # internal:
+  #   labels: {}
+  #   annotations: {}
+  #   parentRefs:
+  #   - name: internal-gw
+  #     namespace: default
+  #   hostnames:
+  #   - internal.example.com
+  #   rules:
+  #   - matches:
+  #     - path:
+  #         type: PathPrefix
+  #         value: /
+  #     backendRefs:
+  #     - name: media-service
+  #       port: 80
+
+# Gateway API GRPCRoutes
+grpcRoutes: {}
+  # grpc:
+  #   labels: {}
+  #   annotations:
+  #     traffic.istio.io/retryOn: "unavailable,deadline-exceeded"
+  #     traffic.istio.io/retryAttempts: "3"
+  #     traffic.istio.io/perTryTimeout: "10s"
+  #   parentRefs:
+  #   - name: edge-gw
+  #     namespace: default
+  #     sectionName: https
+  #   hostnames:
+  #   - api-example.example.com
+  #   rules:
+  #   - matches:
+  #     - method:
+  #         service: "com.example.Service"
+  #         method: "GetResource"
+  #     backendRefs:
+  #     - name: media-service
+  #       port: 50051
+
+# GCP Backend Policies
+gcpBackendPolicies: {}
+  # default-policy:
+  #   annotations: {}
+  #   default:
+  #     securityPolicy: "policy-name"
+  #   targetRef:
+  #     group: ""
+  #     kind: Service
+  #     name: media-service
+
+
 
