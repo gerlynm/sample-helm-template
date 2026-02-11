@@ -178,83 +178,47 @@ hooks:
     #   tag: latest
     # command: ["/bin/sh", "-c", "echo post-hook"]
 
-
-
 # Gateway API HTTPRoutes
 httpRoutes:
   enabled: false
   routes: {}
-  # web:
+  # web-route:
   #   labels: {}
   #   annotations: {}
   #   parentRefs:
-  #   - name: edge-gw
+  #   - name: gateway
   #     namespace: default
   #     sectionName: https
   #   hostnames:
-  #   - api-example.example.com
+  #   - example.com
   #   rules:
   #   - matches:
   #     - path:
   #         type: PathPrefix
-  #         value: /media/v1
+  #         value: /api/v1
   #     backendRefs:
-  #     - name: media-service
+  #     - name: http-service
   #       port: 80
-  # internal:
-  #   labels: {}
-  #   annotations: {}
-  #   parentRefs:
-  #   - name: internal-gw
-  #     namespace: default
-  #   hostnames:
-  #   - internal.example.com
-  #   rules:
-  #   - matches:
-  #     - path:
-  #         type: PathPrefix
-  #         value: /
-  #     backendRefs:
-  #     - name: media-service
-  #       port: 80
-
-# Gateway API GRPCRoutes
-grpcRoutes:
-  enabled: false
-  routes: {}
-  # grpc:
+  # grpc-route:
   #   labels: {}
   #   annotations:
   #     traffic.istio.io/retryOn: "unavailable,deadline-exceeded"
   #     traffic.istio.io/retryAttempts: "3"
   #     traffic.istio.io/perTryTimeout: "10s"
   #   parentRefs:
-  #   - name: edge-gw
+  #   - name: gateway
   #     namespace: default
   #     sectionName: https
   #   hostnames:
-  #   - api-example.example.com
+  #   - example.com
   #   rules:
   #   - matches:
-  #     - method:
-  #         service: "com.example.Service"
-  #         method: "GetResource"
+  #     - headers:
+  #       - name: content-type
+  #         value: application/grpc
   #     backendRefs:
-  #     - name: media-service
+  #     - name: grpc-service
   #       port: 50051
-
-# GCP Backend Policies
-gcpBackendPolicies:
-  enabled: false
-  policies: {}
-  # default-policy:
-  #   annotations: {}
-  #   default:
-  #     securityPolicy: "policy-name"
-  #   targetRef:
-  #     group: ""
-  #     kind: Service
-  #     name: media-service
 
 
 
