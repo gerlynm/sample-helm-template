@@ -1,0 +1,32 @@
+{{- if .Values.hooks.pre.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "frontend-service.fullname" . }}-pre-hook
+  labels:
+    {{- include "frontend-service.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    {{- with .Values.hooks.pre.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: pre-hook
+          image: "{{ .Values.hooks.pre.image.repository }}:{{ .Values.hooks.pre.image.tag }}"
+          imagePullPolicy: {{ .Values.hooks.pre.image.pullPolicy | default "IfNotPresent" }}
+          {{- with .Values.hooks.pre.command }}
+          command: {{ toJson . }}
+          {{- end }}
+          {{- with .Values.hooks.pre.args }}
+          args: {{ toJson . }}
+          {{- end }}
+          {{- with .Values.hooks.pre.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

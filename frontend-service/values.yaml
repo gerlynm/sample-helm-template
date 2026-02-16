@@ -41,24 +41,70 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 3000
+  # For additional ports (like grpc)
   extraPorts: []
+    # - name: grpc
+    #   port: 50051
+    #   targetPort: 50051
+    #   protocol: TCP
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
+
 
 virtualService:
   enabled: false
   hosts: []
   gateways: []
   http: []
+  # - match:
+  #     - uri:
+  #         prefix: /api/v1
+  #   route:
+  #     - destination:
+  #         host: service-name
+  #         port:
+  #           number: 80
+
+# Gateway API HTTPRoutes
+httpRoutes:
+  enabled: false
+  routes: {}
+  # web-route:
+  #   labels: {}
+  #   annotations: {}
+  #   parentRefs:
+  #   - name: gateway
+  #     namespace: default
+  #     sectionName: https
+  #   hostnames:
+  #   - example.com
+  #   rules:
+  #   - matches:
+  #     - path:
+  #         type: PathPrefix
+  #         value: /api/v1
+  #     backendRefs:
+  #     - name: http-service
+  #       port: 80
+  #   grpc-route:
+  #     labels: {}
+  #     annotations:
+  #       traffic.istio.io/retryOn: "unavailable,deadline-exceeded"
+  #       traffic.istio.io/retryAttempts: "3"
+  #       traffic.istio.io/perTryTimeout: "10s"
+  #     parentRefs:
+  #     - name: gateway
+  #       namespace: default
+  #       sectionName: https
+  #     hostnames:
+  #     - example.com
+  #     rules:
+  #     - matches:
+  #       - headers:
+  #         - name: content-type
+  #           value: application/grpc
+  #       backendRefs:
+  #       - name: grpc-service
+  #         port: 50051
 
 resources: {}
   # limits:
@@ -73,6 +119,7 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
@@ -80,15 +127,35 @@ tolerations: []
 
 affinity: {}
 
+# Environment variables
+# - name: KEY
+#   value: "value"
+# - name: KEY_FROM_SECRET
+#   valueFrom:
+#     secretKeyRef:
+#       name: secret-name
+#       key: key
 env: []
 
+# Volumes
 volumes: []
+# - name: config-vol
+#   configMap:
+#     name: log-config
+#     items:
+#       - key: log_level
+#         path: log_level
 
+# VolumeMounts
 volumeMounts: []
+# - mountPath: /etc/config
+#   name: config-vol
+#   readOnly: true
 
 pdb:
   enabled: false
   minAvailable: 1
+  # maxUnavailable: 1
 
 canary:
   enabled: false
@@ -98,6 +165,45 @@ canary:
   #   threshold: 5
   #   maxWeight: 50
   #   stepWeight: 10
+
+# Probes
+probes:
+  liveness:
+    enabled: false
+    # httpGet:
+    #   path: /healthz
+    #   port: http
+    # initialDelaySeconds: 30
+    # periodSeconds: 10
+  readiness:
+    enabled: false
+    # httpGet:
+    #   path: /ready
+    #   port: http
+    # initialDelaySeconds: 5
+    # periodSeconds: 10
+  startup:
+    enabled: false
+    # httpGet:
+    #   path: /healthz
+    #   port: http
+    # failureThreshold: 30
+    # periodSeconds: 10
+
+# ArgoCD Hooks
+hooks:
+  pre:
+    enabled: false
+    # image:
+    #   repository: busybox
+    #   tag: latest
+    # command: ["/bin/sh", "-c", "echo pre-hook"]
+  post:
+    enabled: false
+    # image:
+    #   repository: busybox
+    #   tag: latest
+    # command: ["/bin/sh", "-c", "echo post-hook"]
 
 # Additional labels
 labels: {}
